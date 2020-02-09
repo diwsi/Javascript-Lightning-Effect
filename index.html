@@ -10,7 +10,7 @@
             canvas = document.getElementById("board");
             ctx = canvas.getContext("2d");
         
-            //canvas events
+            //canvas events   
             canvas.addEventListener("mousedown", e => {
                 draw = true;
                 target = new Vector(0, 0, e.clientX - canvas.offsetLeft + document.documentElement.scrollLeft, e.clientY - canvas.offsetTop + document.documentElement.scrollTop);
@@ -25,6 +25,23 @@
                     target = new Vector(0, 0, e.clientX - canvas.offsetLeft + document.documentElement.scrollLeft, e.clientY - canvas.offsetTop + document.documentElement.scrollTop);
                 }
             });
+
+ 
+            canvas.addEventListener("touchstart", e => {
+                draw = true;
+                target = new Vector(0, 0, e.touches[0].clientX - canvas.offsetLeft + document.documentElement.scrollLeft, e.touches[0].clientY - canvas.offsetTop + document.documentElement.scrollTop);
+            }, false);
+
+            canvas.addEventListener("touchend", e => {
+                draw = false;
+            }, false);
+
+            canvas.addEventListener('touchmove', e => {
+                if (draw) {
+                    target = new Vector(0, 0, e.touches[0].clientX - canvas.offsetLeft + document.documentElement.scrollLeft, e.touches[0].clientY - canvas.offsetTop + document.documentElement.scrollTop);
+                }
+            });
+
 
             //Lighning sources            
             points.push(new Vector(0, 0, canvas.width / 2, canvas.height / 2));
