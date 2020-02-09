@@ -55,7 +55,7 @@
             //control box events
             var props = document.querySelectorAll("#controlBox input");
             props.forEach(prp => {
-                prp.onblur = buidLighter;
+                prp.onchange = buidLighter;
             })
             buidLighter();
             window.requestAnimationFrame(Animate);
