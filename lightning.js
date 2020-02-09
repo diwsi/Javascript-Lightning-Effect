@@ -37,7 +37,7 @@ class Lightning {
             //new vector for segment
             var r = new Vector(refv.X1, refv.Y1, dv.X1, dv.Y1);
             
-            //backgroun blur
+            //background blur
             this.Line(context, r, {
                 Color: this.config.GlowColor,
                 With: this.config.GlowWidth * lR,
