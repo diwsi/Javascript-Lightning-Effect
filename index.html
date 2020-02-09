@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+
+<head>
+    <script src="./vector.js"></script>
+    <script src="./lightning.js"></script>
+    <script>
+        var canvas, target, ctx, lt, draw, points = [];
+        document.addEventListener("DOMContentLoaded", function () {
+            canvas = document.getElementById("board");
+            ctx = canvas.getContext("2d");
+        
+            //canvas events
+            canvas.addEventListener("mousedown", e => {
+                draw = true;
+                target = new Vector(0, 0, e.clientX - canvas.offsetLeft + document.documentElement.scrollLeft, e.clientY - canvas.offsetTop + document.documentElement.scrollTop);
+            }, false);
+
+            canvas.addEventListener("mouseup", e => {
+                draw = false;
+            }, false);
+
+            canvas.addEventListener('mousemove', e => {
+                if (draw) {
+                    target = new Vector(0, 0, e.clientX - canvas.offsetLeft + document.documentElement.scrollLeft, e.clientY - canvas.offsetTop + document.documentElement.scrollTop);
+                }
+            });
+
+            //Lighning sources            
+            points.push(new Vector(0, 0, canvas.width / 2, canvas.height / 2));
+            points.push(new Vector(0, 0, 20, 20));
+            points.push(new Vector(0, 0, canvas.width / 2, 20));
+            points.push(new Vector(0, 0, canvas.width - 20, 20));
+            points.push(new Vector(0, 0, 20, canvas.height - 20));
+            points.push(new Vector(0, 0, canvas.width / 2, canvas.height - 20));
+            points.push(new Vector(0, 0, canvas.width - 20, canvas.height - 20));
+
+            //control box events
+            var props = document.querySelectorAll("#controlBox input");
+            props.forEach(prp => {
+                prp.onblur = buidLighter;
+            })
+            buidLighter();
+            window.requestAnimationFrame(Animate);
+        });
+
+        function buidLighter() {
+            var opt = {};
+            var props = document.querySelectorAll("#controlBox input");
+            //Build lighning config
+            props.forEach(prp => {
+                var setter = prp.dataset.opt;
+                opt[setter] = prp.value;
+            })
+            lt = new Lightning(opt);
+        }
+        function setProp(config, prop) {
+            config[prop] = document.getElementById(prop).value;
+        }
+
+        function Animate() {
+            //Clear board
+            ctx.shadowBlur = 0;
+            ctx.shadowColor = null;
+            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            if (draw) {
+                points.forEach(p => {
+                    lt.Cast(ctx, p, target);
+                });
+            }
+
+            setTimeout(() => {
+                this.Animate();
+            }, 60);
+        }
+    </script>
+</head>
+
+<body style="background-color: black;color: aliceblue;">
+
+
+    <div id="controlBox" style="float: left;">
+        <span>Segments:</span><br>
+        <input data-opt="Segments" type="range" min="5" max="100" step="1" value="40" />
+        <br>
+        <span>Threshold:</span><br>
+        <input data-opt="Threshold" type="range" min="0" max="1" step="0.1" value="0.5" />
+        <br>
+        <span>Width:</span><br>
+        <input data-opt="Width" type="range" min="0" max="5" step="0.1" value="1" />
+        <br>
+        <span>Color:</span><br>
+        <input data-opt="Color" value="white" />
+        <br>
+        <span>Blur:</span><br>
+        <input data-opt="Blur" type="range" min="0" max="30" step="1" value="5" />
+        <br>
+        <span>Blur Color:</span><br>
+        <input data-opt="BlurColor" value="white" />
+        <br>
+        <span>Alpha:</span><br>
+        <input data-opt="Alpha" type="range" min="0" max="1" step="0.1" value="1" />
+        <br>
+        <span>Glow Color:</span><br>
+        <input data-opt="GlowColor" value="#000055" />
+        <br>
+        <span>Glow Width:</span><br>
+        <input data-opt="GlowWidth" type="range" min="0" max="200" step="1" value="40" />
+        <br>
+        <span>Glow Blur:</span><br>
+        <input data-opt="GlowBlur" type="range" min="0" max="400" step="1" value="100" />
+        <br>
+        <span>Glow Alpha:</span><br>
+        <input data-opt="GlowAlpha" type="range" min="0" max="50" step="1" value="30" />
+        <br>
+
+    </div>
+    <div style="float: left; margin-left: 10px;">
+        <canvas id="board" width="500" height="500" style="border: 1px solid;"></canvas><br>
+        <span> (click and drag)</span>
+    </div>
+
+
+</body>
+
+</html>
