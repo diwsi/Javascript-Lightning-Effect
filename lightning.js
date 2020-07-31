@@ -6,6 +6,9 @@ class Lightning {
     }
 
     Cast(context, from, to) {
+
+        context.save();
+
         if (!from || !to) {
             return;
         }
@@ -60,6 +63,8 @@ class Lightning {
 
         this.Circle(context, to, lR);
         this.Circle(context, from, lR);
+
+        context.restore();
 
     }
 
